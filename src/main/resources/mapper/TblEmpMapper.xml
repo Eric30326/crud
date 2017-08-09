@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huanh.crud.dao.TblEmpMapper">
+  <resultMap id="BaseResultMap" type="com.huanh.crud.domain.TblEmp">
+    <id column="emp_id" jdbcType="INTEGER" property="empId" />
+    <result column="emp_name" jdbcType="VARCHAR" property="empName" />
+    <result column="gender" jdbcType="CHAR" property="gender" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="dept_id" jdbcType="INTEGER" property="deptId" />
+  </resultMap>
+  <resultMap id="WithDeptResultMap" type="com.huanh.crud.domain.TblEmp" extends="BaseResultMap">
+    <association property="tblDept" column="dept_id" select="com.huanh.crud.dao.TblDeptMapper.selectByPrimaryKey" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    emp_id, emp_name, gender, email, dept_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tbl_emp
+    where emp_id = #{empId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPrimaryKeyWithDept" parameterType="java.lang.Integer" resultMap="WithDeptResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tbl_emp
+    where emp_id = #{empId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tbl_emp
+    where emp_id = #{empId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.huanh.crud.domain.TblEmp">
+    insert into tbl_emp (emp_id, emp_name, gender,
+      email, dept_id)
+    values (#{empId,jdbcType=INTEGER}, #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=CHAR},
+      #{email,jdbcType=VARCHAR}, #{deptId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.huanh.crud.domain.TblEmp">
+    insert into tbl_emp
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="empId != null">
+        emp_id,
+      </if>
+      <if test="empName != null">
+        emp_name,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="empId != null">
+        #{empId,jdbcType=INTEGER},
+      </if>
+      <if test="empName != null">
+        #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=CHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.huanh.crud.domain.TblEmp">
+    update tbl_emp
+    <set>
+      <if test="empName != null">
+        emp_name = #{empName,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=CHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where emp_id = #{empId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.huanh.crud.domain.TblEmp">
+    update tbl_emp
+    set emp_name = #{empName,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=CHAR},
+      email = #{email,jdbcType=VARCHAR},
+      dept_id = #{deptId,jdbcType=INTEGER}
+    where emp_id = #{empId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByWhereWithDept" parameterType="com.huanh.crud.domain.basic.Where" resultMap="WithDeptResultMap">
+    SELECT
+      <if test="distinct">
+        DISTINCT
+      </if>
+      <include refid="Base_Column_List"/>
+    FROM tbl_emp
+    <if test="_parameter != null" >
+      <include refid="com.huanh.core.persistence.reader.CommonReaderMapper.Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null">
+      limit ${limit}, ${offset}
+    </if>
+  </select>
+</mapper>
